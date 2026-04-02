@@ -324,6 +324,7 @@
       background-size: 200% 100%;
       color: var(--white);
       overflow: hidden;
+      position: relative;
       max-height: 56px;
       transition: max-height 0.3s ease, opacity 0.3s ease;
       animation: announcementGlow 8s linear infinite;
@@ -334,42 +335,56 @@
       opacity: 0;
     }
 
+    .announcement::before,
+    .announcement::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 88px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .announcement::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--blue-700) 0%, rgba(26, 58, 124, 0) 100%);
+    }
+
+    .announcement::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--blue-700) 0%, rgba(26, 58, 124, 0) 100%);
+    }
+
     .announcement-inner {
       min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       position: relative;
-      padding: 10px 48px 10px 16px;
-      text-align: center;
+      padding: 10px 0;
+      overflow: hidden;
+    }
+
+    .announcement-track {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      will-change: transform;
+      min-width: max-content;
+      animation: announcementSlide 24s linear infinite;
     }
 
     .announcement-text {
       display: inline-flex;
       align-items: center;
-      white-space: nowrap;
-      animation: announcementFloat 6s ease-in-out infinite;
+      gap: 14px;
+      padding-right: 14px;
     }
 
-    .announcement-close {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.6);
-      cursor: pointer;
-      font-size: 16px;
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      transition: background 0.2s ease, color 0.2s ease;
+    .announcement-text + .announcement-text {
+      padding-left: 14px;
     }
 
-    .announcement-close:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--white);
+    .announcement-sep {
+      color: rgba(255, 255, 255, 0.55);
     }
 
     .site-nav {
@@ -398,31 +413,34 @@
     .logo {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex-shrink: 0;
     }
 
     .logo-mark {
-      width: 24px;
-      height: 24px;
-      color: var(--accent);
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      display: block;
+      filter: brightness(0) saturate(100%) invert(60%) sepia(92%) saturate(3352%) hue-rotate(354deg) brightness(102%) contrast(96%);
       flex-shrink: 0;
     }
 
     .logo-eos {
-      font-size: 22px;
-      line-height: 1;
+      font-size: 24px;
+      line-height: 0.95;
       font-weight: 800;
       color: var(--blue-600);
     }
 
     .logo-sub {
       display: block;
-      margin-top: 4px;
+      margin-top: 0;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.12em;
       color: var(--gray-600);
+      line-height: 1.05;
     }
 
     .nav-links {
@@ -677,7 +695,7 @@
     }
 
     .hero {
-      min-height: 100vh;
+      min-height: 68vh;
       background-color: var(--blue-900);
       background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
       background-size: 28px 28px;
@@ -707,14 +725,14 @@
     }
 
     .hero-inner {
-      min-height: calc(100vh - 126px);
+      min-height: calc(54vh - 96px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 32px;
-      padding: 48px 0 120px;
+      gap: 16px;
+      padding: 0 0 62px;
     }
 
     .hero-badge {
@@ -741,7 +759,7 @@
 
     .hero-subtitle {
       display: block;
-      margin-top: 18px;
+      margin-top: 8px;
       color: rgba(255, 255, 255, 0.4);
       font-size: clamp(18px, 2vw, 26px);
       font-weight: 400;
@@ -1362,13 +1380,12 @@
       }
     }
 
-    @keyframes announcementFloat {
-      0%,
-      100% {
-        transform: translateY(0);
+    @keyframes announcementSlide {
+      0% {
+        transform: translateX(0);
       }
-      50% {
-        transform: translateY(-1px);
+      100% {
+        transform: translateX(-50%);
       }
     }
 
@@ -1404,10 +1421,13 @@
         padding: 64px 0;
       }
 
-      .announcement-inner {
-        justify-content: flex-start;
-        text-align: left;
-        padding-right: 40px;
+      .announcement::before,
+      .announcement::after {
+        width: 28px;
+      }
+
+      .announcement-track {
+        animation-duration: 18s;
       }
 
       .nav-links,
@@ -1420,7 +1440,9 @@
       }
 
       .hero-inner {
-        padding: 32px 0 158px;
+        min-height: auto;
+        gap: 14px;
+        padding: 0 0 102px;
       }
 
       .hero-title {
@@ -1498,17 +1520,37 @@
 <body>
   <div class="announcement" id="announcementBar">
     <div class="announcement-inner container">
-      <p class="label announcement-text">🚚&nbsp; Now serving 50+ cities across India &nbsp;·&nbsp; Free home survey for every booking</p>
-      <button class="announcement-close" id="announcementClose" aria-label="Dismiss announcement">✕</button>
+      <div class="announcement-track label" aria-label="Company announcements">
+        <p class="announcement-text">
+          <span>Now serving 50+ cities across India</span>
+          <span class="announcement-sep">|</span>
+          <span>Free home survey for every booking</span>
+          <span class="announcement-sep">|</span>
+          <span>24 hour booking support</span>
+          <span class="announcement-sep">|</span>
+          <span>Insured moves with GPS tracking</span>
+          <span class="announcement-sep">|</span>
+          <span>No hidden charges</span>
+        </p>
+        <p class="announcement-text" aria-hidden="true">
+          <span>Now serving 50+ cities across India</span>
+          <span class="announcement-sep">|</span>
+          <span>Free home survey for every booking</span>
+          <span class="announcement-sep">|</span>
+          <span>24 hour booking support</span>
+          <span class="announcement-sep">|</span>
+          <span>Insured moves with GPS tracking</span>
+          <span class="announcement-sep">|</span>
+          <span>No hidden charges</span>
+        </p>
+      </div>
     </div>
   </div>
 
   <nav class="site-nav" id="siteNav">
     <div class="container nav-inner">
       <a class="logo" href="#home" aria-label="EOS Packers and Movers home">
-        <svg class="logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" fill="currentColor"></path>
-        </svg>
+        <img class="logo-mark" src="images/in.svg" alt="" aria-hidden="true" />
         <span>
           <span class="logo-eos">EOS</span>
           <span class="logo-sub">PACKERS &amp; MOVERS</span>
@@ -1555,9 +1597,7 @@
     <div>
       <div class="mobile-menu-top">
         <a class="logo" href="#home">
-          <svg class="logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" fill="currentColor"></path>
-          </svg>
+          <img class="logo-mark" src="images/in.svg" alt="" aria-hidden="true" />
           <span>
             <span class="logo-eos" style="color:#fff;">EOS</span>
             <span class="logo-sub" style="color:rgba(255,255,255,0.72);">PACKERS &amp; MOVERS</span>
@@ -2047,8 +2087,6 @@
   </footer>
 
   <script>
-    const announcementBar = document.getElementById('announcementBar');
-    const announcementClose = document.getElementById('announcementClose');
     const siteNav = document.getElementById('siteNav');
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -2059,10 +2097,6 @@
     const contactFeedback = document.getElementById('contactFeedback');
     const mobileLinks = mobileMenu.querySelectorAll('a');
     const revealItems = document.querySelectorAll('.reveal');
-
-    announcementClose.addEventListener('click', () => {
-      announcementBar.classList.add('hidden');
-    });
 
     const handleNavScroll = () => {
       if (window.scrollY > 80) {
