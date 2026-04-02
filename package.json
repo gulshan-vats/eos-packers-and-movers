@@ -1,0 +1,14 @@
+{
+  "name": "eos-packers-movers-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single-page EOS Packers and Movers website with Node mail handler",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:env": "node --env-file=.env server.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
